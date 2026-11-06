@@ -117,13 +117,6 @@
             align-items: center;
         }
 
-        .filter-row label-title {
-            font-weight: bold;
-            color: var(--accent-color);
-            min-width: 90px;
-            font-size: 0.95rem;
-        }
-
         .filter-btn {
             background: var(--sidebar-bg);
             border: 1px solid var(--border-color);
@@ -352,9 +345,8 @@
     </header>
 
     <div class="main-container">
-        <!-- Cột Nội Dung Chính -->
         <div>
-            <!-- THANH MENU & LỌC ĐẶT LÊN TRÊN ĐẦU -->
+            <!-- THANH MENU & LỌC -->
             <div class="filter-bar">
                 <div class="filter-row">
                     <span style="color:var(--accent-color); font-weight:bold; min-width:90px;">Danh mục:</span>
@@ -365,14 +357,14 @@
                 <div class="filter-row">
                     <span style="color:var(--accent-color); font-weight:bold; min-width:90px;">Bối cảnh:</span>
                     <div id="context-buttons" style="display:flex; flex-wrap:wrap; gap:6px;">
-                        <!-- Đưa tự động qua JS -->
+                        <!-- JS tự render -->
                     </div>
                 </div>
 
                 <div class="filter-row" style="align-items: flex-start;">
                     <span style="color:var(--accent-color); font-weight:bold; min-width:90px; padding-top:4px;">Thể loại:</span>
                     <div class="checkbox-container" id="genre-checkbox-group">
-                        <!-- Đưa tự động qua JS -->
+                        <!-- JS tự render -->
                     </div>
                 </div>
             </div>
@@ -393,7 +385,7 @@
             </div>
         </div>
 
-        <!-- Sidebar Phải (Tìm kiếm & Social) -->
+        <!-- Sidebar Phải -->
         <div class="sidebar-right">
             <div class="widget">
                 <h3>Tìm Kiếm Nhanh</h3>
@@ -461,19 +453,60 @@
             }
         }
 
+        // Hàm chuyển tiếng Việt có dấu thành slug không dấu (Ví dụ: "Ảnh Vệ" -> "anh-ve")
+        function createSlug(str) {
+            if (!str) return '';
+            str = str.toLowerCase();
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+            str = str.replace(/đ/g, "d");
+            str = str.replace(/([^0-9a-z-\s])/g, ""); // Xóa ký tự đặc biệt
+            str = str.replace(/(\s+)/g, "-");          // Thay khoảng trắng thành dấu -
+            str = str.replace(/-+(-+)/g, "-");          // Thu gọn gạch ngang liên tiếp
+            str = str.replace(/^-+|-+$/g, "");          // Cắt gạch ngang thừa ở đầu/cuối
+            return str;
+        }
+
+        // Hàm đọc file CSV chuẩn hỗ trợ dấu phẩy bên trong ngoặc kép
+        function parseCSVLine(textLine) {
+            let result = [];
+            let insideQuotes = false;
+            let currentVal = '';
+            for (let i = 0; i < textLine.length; i++) {
+                let char = textLine[i];
+                if (char === '"') {
+                    insideQuotes = !insideQuotes;
+                } else if (char === ',' && !insideQuotes) {
+                    result.push(currentVal.trim().replace(/^"|"$/g, ''));
+                    currentVal = '';
+                } else {
+                    currentVal += char;
+                }
+            }
+            result.push(currentVal.trim().replace(/^"|"$/g, ''));
+            return result;
+        }
+
         function parseCSV(text) {
             const lines = text.split('\n');
             allStories = [];
 
             for (let i = 1; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
-                const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(col => col.replace(/^"|"$/g, '').trim());
+                const cols = parseCSVLine(lines[i]);
                 
-                if (cols[0]) {
-                    const title = cols[0];
-                    const genresStr = cols[1] || '';
-                    const genres = genresStr.split(',').map(g => g.trim()).filter(g => g);
+                if (cols[0] && cols[0].toUpperCase() !== 'TÊN TRUYỆN') {
+                    let title = cols[0];
+                    let genresStr = cols[1] || '';
+                    
+                    // Tách thể loại bằng dấu phẩy
+                    let genres = genresStr.split(',').map(g => g.trim()).filter(g => g);
 
+                    // Nhận diện bối cảnh tự động
                     let context = "Khác";
                     for (let ctx of CONTEXT_LIST) {
                         if (genresStr.toLowerCase().includes(ctx.toLowerCase()) || title.toLowerCase().includes(ctx.toLowerCase())) {
@@ -482,11 +515,15 @@
                         }
                     }
 
+                    // Tự động sinh link dạng https://dammythuquan.com/ten-truyen-slug
+                    let slug = createSlug(title);
+                    let storyLink = `https://dammythuquan.com/${slug}`;
+
                     allStories.push({
                         title: title,
                         genres: genres,
                         context: context,
-                        link: `https://dammythuquan.com/`
+                        link: storyLink
                     });
                 }
             }
@@ -496,14 +533,12 @@
         }
 
         function initTopFilters() {
-            // Render Bối cảnh ở thanh trên
             let ctxHtml = `<button class="filter-btn active" onclick="filterByContext('ALL')" id="ctx-ALL">Tất cả</button>`;
             CONTEXT_LIST.forEach(ctx => {
                 ctxHtml += `<button class="filter-btn" onclick="filterByContext('${ctx}')" id="ctx-${ctx}">${ctx}</button>`;
             });
             document.getElementById('context-buttons').innerHTML = ctxHtml;
 
-            // Thu thập thể loại độc nhất
             let allGenresSet = new Set();
             allStories.forEach(story => {
                 story.genres.forEach(g => allGenresSet.add(g));
@@ -516,7 +551,6 @@
             });
             document.getElementById('genre-checkbox-group').innerHTML = genreHtml;
 
-            // Render thanh chữ cái A-Z
             let azHtml = `<button class="az-btn active" onclick="filterByLetter('ALL')">Tất cả</button>`;
             for (let i = 65; i <= 90; i++) {
                 let char = String.fromCharCode(i);
