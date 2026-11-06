@@ -443,7 +443,8 @@
         let currentPage = 1;
         const itemsPerPage = 30;
 
-        const CONTEXT_LIST = ["Nguyên thủy", "Cổ đại", "Dân quốc", "Thập niên", "Hiện đại", "Tương lai", "Mạt thế"];
+        // Đã thêm "Xuyên nhanh" vào danh sách bối cảnh
+        const CONTEXT_LIST = ["Nguyên thủy", "Cổ đại", "Dân quốc", "Thập niên", "Hiện đại", "Tương lai", "Mạt thế", "Xuyên nhanh"];
 
         function toggleTheme() {
             const body = document.body;
@@ -499,17 +500,30 @@
             allStories = [];
 
             for (let i = 1; i < lines.length; i++) {
-                let line = lines[i].trim();
-                if (!line) continue;
+                let line = lines[i];
+                if (!line || !line.trim()) continue;
 
+                // Tách cột chính xác theo định dạng Tab hoặc CSV của Google Sheets
                 let cols = line.includes('\t') ? line.split('\t') : parseCSVLine(line);
                 
-                if (cols[0] && cols[0].toUpperCase() !== 'TÊN TRUYỆN') {
-                    let title = cols[0].replace(/^"|"$/g, '').trim();
-                    let genresStr = (cols[1] || '').replace(/^"|"$/g, '').trim();
-                    
+                // Cột 0: Tên truyện, Cột 1: Thể loại
+                let rawTitle = cols[0] || '';
+                let rawGenres = cols[1] || '';
+
+                let title = rawTitle.replace(/^"|"$/g, '').trim();
+                let genresStr = rawGenres.replace(/^"|"$/g, '').trim();
+
+                // Phòng trường hợp dòng bị đảo hoặc lệch, kiểm tra nếu cột 0 trống nhưng cột 1 có tên truyện
+                if (!title && genresStr && !genresStr.includes(',')) {
+                    // Đổi chỗ nếu phát hiện dữ liệu bị ngược
+                    title = genresStr;
+                    genresStr = rawTitle.replace(/^"|"$/g, '').trim();
+                }
+
+                if (title && title.toUpperCase() !== 'TÊN TRUYỆN') {
                     let genres = genresStr.split(',').map(g => g.trim()).filter(g => g);
 
+                    // Nhận diện bối cảnh ưu tiên kiểm tra "Xuyên nhanh" trước
                     let context = "Khác";
                     for (let ctx of CONTEXT_LIST) {
                         if (genresStr.toLowerCase().includes(ctx.toLowerCase()) || title.toLowerCase().includes(ctx.toLowerCase())) {
@@ -519,7 +533,6 @@
                     }
 
                     let slug = createSlug(title);
-                    // Đã thêm chữ /truyen/ vào giữa theo đúng yêu cầu
                     let storyLink = `https://dammythuquan.com/truyen/${slug}`;
 
                     allStories.push({
