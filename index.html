@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Góc Lưu Trữ - Đam Mỹ Thư Quán</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0b0b;
+            --card-bg: #141414;
+            --text-color: #f1f1f1;
+            --accent-color: #FFD700;
+            --border-color: #333333;
+            --sidebar-bg: #111111;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --accent-color: #b7950b;
+            --border-color: #e2e8f0;
+            --sidebar-bg: #edf2f7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 2px solid var(--accent-color);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .theme-toggle, .btn-home {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .theme-toggle:hover, .btn-home:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+        }
+
+        .main-container {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-right {
+                order: 3;
+            }
+        }
+
+        /* Sidebar Trái (Menu & Thể loại) */
+        .sidebar-left {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            height: fit-content;
+        }
+
+        .menu-section {
+            margin-bottom: 25px;
+        }
+
+        .menu-section h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .menu-list {
+            list-style: none;
+        }
+
+        .menu-list li {
+            padding: 8px 0;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .menu-list li:hover, .menu-list li.active {
+            color: var(--accent-color);
+            padding-left: 5px;
+        }
+
+        .checkbox-group {
+            max-height: 200px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .checkbox-group label {
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Khu vực hiển thị nội dung chính */
+        .content-area {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 8px;
+            min-height: 600px;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .az-filter {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .az-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .az-btn:hover, .az-btn.active {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border-color: var(--accent-color);
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .story-card {
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .story-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .story-meta {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .story-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tag-badge {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .read-btn {
+            text-align: center;
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 6px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: block;
+        }
+
+        .read-btn:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+        }
+
+        /* Sidebar Phải (Social & Tìm kiếm) */
+        .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .widget {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .widget h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent-color);
+        }
+
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .facebook-fanpage { background: #1877f2; }
+        .facebook-group { background: #050505; border: 1px solid #333; }
+        .web-link { background: var(--accent-color); color: #000; }
+
+        .social-btn:hover { opacity: 0.9; }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--accent-color);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <header>
+        <div class="logo">
+            <h1>GÓC LƯU TRỮ</h1>
+        </div>
+        <div class="header-controls">
+            <button class="btn-home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i> Trang Chủ</button>
+            <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Giao diện</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar Trái -->
+        <div class="sidebar-left">
+            <div class="menu-section">
+                <h3>Danh Mục</h3>
+                <ul class="menu-list">
+                    <li onclick="switchTab('home')" class="active" id="menu-home">Trang chủ (A-Z)</li>
+                    <li onclick="switchTab('recent')" id="menu-recent">Mới cập nhật</li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <h3>Bối Cảnh</h3>
+                <ul class="menu-list" id="context-menu-list">
+                    <!-- Được sinh tự động qua JS -->
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <h3>Thể Loại</h3>
+                <div class="checkbox-group" id="genre-checkbox-group">
+                    <!-- Được sinh tự động qua JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div class="content-area">
+            <div id="content-header" class="section-title">
+                <span>Tất Cả Truyện</span>
+            </div>
+            
+            <div id="az-filter-container" class="az-filter">
+                <!-- Bộ lọc A-Z -->
+            </div>
+
+            <div id="stories-container">
+                <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu từ Google Sheets...</div>
+            </div>
+        </div>
+
+        <!-- Sidebar Phải -->
+        <div class="sidebar-right">
+            <div class="widget">
+                <h3>Tìm Kiếm Nhanh</h3>
+                <input type="text" id="searchInput" class="search-box" placeholder="Nhập tên truyện..." onkeyup="handleSearch()">
+            </div>
+
+            <div class="widget">
+                <h3>Liên Kết Thư Quán</h3>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/dammythuquan/" target="_blank" class="social-btn facebook-fanpage">
+                        <i class="fa-brands fa-facebook"></i> Fanpage Thư Quán
+                    </a>
+                    <a href="https://www.facebook.com/groups/29568439142757697" target="_blank" class="social-btn facebook-group">
+                        <i class="fa-brands fa-facebook-f"></i> Group Thư Quán
+                    </a>
+                    <a href="https://dammythuquan.com/" target="_blank" class="social-btn web-link">
+                        <i class="fa-solid fa-globe"></i> Web Đam Mỹ Thư Quán
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cấu hình kết nối Google Sheet (Published to CSV)
+        const SHEET_ID = '1S_0kWJhtX9VC57k-e0HL2cuAxL44zw1Wjgccc32aQXo';
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+
+        let allStories = [];
+        let currentTab = 'home';
+        let currentLetter = 'ALL';
+        let currentContext = 'ALL';
+        let selectedGenres = [];
+
+        // Danh sách bối cảnh chuẩn cố định
+        const CONTEXT_LIST = ["Nguyên thủy", "Cổ đại", "Dân quốc", "Thập niên", "Hiện đại", "Tương lai", "Mạt thế"];
+
+        // Xử lý đổi theme và lưu vào localStorage
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const btn = document.getElementById('themeToggleBtn');
+            btn.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-moon"></i> Giao diện' : '<i class="fa-solid fa-sun"></i> Giao diện';
+        }
+
+        // Tải theme đã lưu khi mở trang
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            fetchSheetData();
+        });
+
+        // Đọc dữ liệu từ Google Sheets dạng CSV
+        async function fetchSheetData() {
+            try {
+                const response = await fetch(SHEET_URL);
+                const data = await response.text();
+                parseCSV(data);
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu:", error);
+                document.getElementById('stories-container').innerHTML = `<p style="color: red; text-align: center;">Không thể tải dữ liệu từ Google Sheets. Vui lòng kiểm tra lại quyền chia sẻ file!</p>`;
+            }
+        }
+
+        // Phân tích cú pháp CSV từ Google Sheets
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            
+            allStories = [];
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                // Xử lý cơ bản tách CSV
+                const row = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+                
+                // Giả định cột 0: Tên truyện, Cột 1: Thể loại, Cột 2: Ngày cập nhật (YYYY-MM-DD)
+                if (lines[i]) {
+                    const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(col => col.replace(/^"\vert{}"$/g, '').trim());
+                    if(cols[0]) {
+                        const title = cols[0];
+                        const genresStr = cols[1] || '';
+                        const genres = genresStr.split(',').map(g => g.trim()).filter(g => g);
+                        const updateDate = cols[2] || '2026-01-01';
+
+                        // Tự động nhận diện bối cảnh dựa vào thể loại hoặc tên truyện
+                        let context = "Khác";
+                        for(let ctx of CONTEXT_LIST) {
+                            if(genresStr.toLowerCase().includes(ctx.toLowerCase()) || title.toLowerCase().includes(ctx.toLowerCase())) {
+                                context = ctx;
+                                break;
+                            }
+                        }
+
+                        allStories.push({
+                            title: title,
+                            genres: genres,
+                            context: context,
+                            date: updateDate,
+                            link: `https://dammythuquan.com/` // Link hệ thống tự sinh dựa theo tên truyện hoặc trang chính
+                        });
+                    }
+                }
+            }
+
+            initSidebarFilters();
+            renderContent();
+        }
+
+        // Khởi tạo menu bối cảnh và checkbox thể loại tự động nạp
+        function initSidebarFilters() {
+            // Render Bối cảnh
+            let ctxHtml = `<li onclick="filterByContext('ALL')" id="ctx-ALL" class="active">Tất cả bối cảnh</li>`;
+            CONTEXT_LIST.forEach(ctx => {
+                ctxHtml += `<li onclick="filterByContext('${ctx}')" id="ctx-${ctx}">${ctx}</li>`;
+            });
+            document.getElementById('context-menu-list').innerHTML = ctxHtml;
+
+            // Thu thập toàn bộ thể loại độc nhất tự động từ Sheet
+            let allGenresSet = new Set();
+            allStories.forEach(story => {
+                story.genres.forEach(g => allGenresSet.add(g));
+            });
+
+            // Sắp xếp thể loại theo bảng chữ cái A-Z
+            let sortedGenres = Array.from(allGenresSet).sort((a, b) => a.localeCompare(b, 'vi'));
+
+            let genreHtml = '';
+            sortedGenres.forEach(genre => {
+                genreHtml += `<label><input type="checkbox" value="${genre}" onchange="handleGenreChange()"> ${genre}</label>`;
+            });
+            document.getElementById('genre-checkbox-group').innerHTML = genreHtml;
+
+            // Render thanh chữ cái A-Z
+            let azHtml = `<button class="az-btn active" onclick="filterByLetter('ALL')">Tất cả</button>`;
+            for (let i = 65; i <= 90; i++) {
+                let char = String.fromCharCode(i);
+                azHtml += `<button class="az-btn" onclick="filterByLetter('${char}')" id="az-${char}">${char}</button>`;
+            }
+            document.getElementById('az-filter-container').innerHTML = azHtml;
+        }
+
+        // Chuyển Tab Menu
+        function switchTab(tab) {
+            currentTab = tab;
+            currentContext = 'ALL';
+            currentLetter = 'ALL';
+            selectedGenres = [];
+            
+            // Reset UI active
+            document.querySelectorAll('.menu-list li').forEach(el => el.classList.remove('active'));
+            if(tab === 'home') document.getElementById('menu-home').classList.add('active');
+            if(tab === 'recent') document.getElementById('menu-recent').classList.add('active');
+
+            // Reset checkbox thể loại
+            document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
+
+            renderContent();
+        }
+
+        // Lọc theo Bối Cảnh
+        function filterByContext(ctx) {
+            currentContext = ctx;
+            currentTab = 'context';
+            document.querySelectorAll('#context-menu-list li').forEach(el => el.classList.remove('active'));
+            document.getElementById(`ctx-${ctx}`).classList.add('active');
+            renderContent();
+        }
+
+        // Lọc theo Chữ cái A-Z
+        function filterByLetter(letter) {
+            currentLetter = letter;
+            document.querySelectorAll('.az-btn').forEach(btn => btn.classList.remove('active'));
+            if(event && event.target) event.target.classList.add('active');
+            renderContent();
+        }
+
+        // Xử lý khi tích chọn nhiều Thể Loại
+        function handleGenreChange() {
+            const checkboxes = document.querySelectorAll('.checkbox-group input:checked');
+            selectedGenres = Array.from(checkboxes).map(cb => cb.value);
+            renderContent();
+        }
+
+        // Tìm kiếm nhanh
+        function handleSearch() {
+            renderContent();
+        }
+
+        // Hiển thị nội dung chính lên màn hình
+        function renderContent() {
+            let
