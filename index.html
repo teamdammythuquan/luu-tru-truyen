@@ -407,7 +407,6 @@
     </div>
 
     <script>
-        // Cấu hình kết nối Google Sheet (Published to CSV)
         const SHEET_ID = '1S_0kWJhtX9VC57k-e0HL2cuAxL44zw1Wjgccc32aQXo';
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
 
@@ -417,7 +416,6 @@
         let currentContext = 'ALL';
         let selectedGenres = [];
 
-        // Danh sách bối cảnh chuẩn cố định
         const CONTEXT_LIST = ["Nguyên thủy", "Cổ đại", "Dân quốc", "Thập niên", "Hiện đại", "Tương lai", "Mạt thế"];
 
         // Xử lý đổi theme và lưu vào localStorage
@@ -435,7 +433,6 @@
             btn.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-moon"></i> Giao diện' : '<i class="fa-solid fa-sun"></i> Giao diện';
         }
 
-        // Tải theme đã lưu khi mở trang
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.body.setAttribute('data-theme', savedTheme);
@@ -443,7 +440,6 @@
             fetchSheetData();
         });
 
-        // Đọc dữ liệu từ Google Sheets dạng CSV
         async function fetchSheetData() {
             try {
                 const response = await fetch(SHEET_URL);
@@ -455,43 +451,34 @@
             }
         }
 
-        // Phân tích cú pháp CSV từ Google Sheets
         function parseCSV(text) {
             const lines = text.split('\n');
-            const headers = lines[0].split(',').map(h => h.trim());
-            
             allStories = [];
+
             for (let i = 1; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
-                // Xử lý cơ bản tách CSV
-                const row = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+                const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(col => col.replace(/^"|"$/g, '').trim());
                 
-                // Giả định cột 0: Tên truyện, Cột 1: Thể loại, Cột 2: Ngày cập nhật (YYYY-MM-DD)
-                if (lines[i]) {
-                    const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(col => col.replace(/^"\vert{}"$/g, '').trim());
-                    if(cols[0]) {
-                        const title = cols[0];
-                        const genresStr = cols[1] || '';
-                        const genres = genresStr.split(',').map(g => g.trim()).filter(g => g);
-                        const updateDate = cols[2] || '2026-01-01';
+                if (cols[0]) {
+                    const title = cols[0];
+                    const genresStr = cols[1] || '';
+                    const genres = genresStr.split(',').map(g => g.trim()).filter(g => g);
 
-                        // Tự động nhận diện bối cảnh dựa vào thể loại hoặc tên truyện
-                        let context = "Khác";
-                        for(let ctx of CONTEXT_LIST) {
-                            if(genresStr.toLowerCase().includes(ctx.toLowerCase()) || title.toLowerCase().includes(ctx.toLowerCase())) {
-                                context = ctx;
-                                break;
-                            }
+                    // Tự động nhận diện bối cảnh dựa vào thể loại hoặc tên truyện
+                    let context = "Khác";
+                    for (let ctx of CONTEXT_LIST) {
+                        if (genresStr.toLowerCase().includes(ctx.toLowerCase()) || title.toLowerCase().includes(ctx.toLowerCase())) {
+                            context = ctx;
+                            break;
                         }
-
-                        allStories.push({
-                            title: title,
-                            genres: genres,
-                            context: context,
-                            date: updateDate,
-                            link: `https://dammythuquan.com/` // Link hệ thống tự sinh dựa theo tên truyện hoặc trang chính
-                        });
                     }
+
+                    allStories.push({
+                        title: title,
+                        genres: genres,
+                        context: context,
+                        link: `https://dammythuquan.com/` // Link gốc hệ thống
+                    });
                 }
             }
 
@@ -499,7 +486,6 @@
             renderContent();
         }
 
-        // Khởi tạo menu bối cảnh và checkbox thể loại tự động nạp
         function initSidebarFilters() {
             // Render Bối cảnh
             let ctxHtml = `<li onclick="filterByContext('ALL')" id="ctx-ALL" class="active">Tất cả bối cảnh</li>`;
@@ -508,15 +494,13 @@
             });
             document.getElementById('context-menu-list').innerHTML = ctxHtml;
 
-            // Thu thập toàn bộ thể loại độc nhất tự động từ Sheet
+            // Thu thập thể loại độc nhất
             let allGenresSet = new Set();
             allStories.forEach(story => {
                 story.genres.forEach(g => allGenresSet.add(g));
             });
 
-            // Sắp xếp thể loại theo bảng chữ cái A-Z
             let sortedGenres = Array.from(allGenresSet).sort((a, b) => a.localeCompare(b, 'vi'));
-
             let genreHtml = '';
             sortedGenres.forEach(genre => {
                 genreHtml += `<label><input type="checkbox" value="${genre}" onchange="handleGenreChange()"> ${genre}</label>`;
@@ -532,25 +516,20 @@
             document.getElementById('az-filter-container').innerHTML = azHtml;
         }
 
-        // Chuyển Tab Menu
         function switchTab(tab) {
             currentTab = tab;
             currentContext = 'ALL';
             currentLetter = 'ALL';
             selectedGenres = [];
             
-            // Reset UI active
             document.querySelectorAll('.menu-list li').forEach(el => el.classList.remove('active'));
-            if(tab === 'home') document.getElementById('menu-home').classList.add('active');
-            if(tab === 'recent') document.getElementById('menu-recent').classList.add('active');
+            if (tab === 'home') document.getElementById('menu-home').classList.add('active');
+            if (tab === 'recent') document.getElementById('menu-recent').classList.add('active');
 
-            // Reset checkbox thể loại
             document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
-
             renderContent();
         }
 
-        // Lọc theo Bối Cảnh
         function filterByContext(ctx) {
             currentContext = ctx;
             currentTab = 'context';
@@ -559,26 +538,78 @@
             renderContent();
         }
 
-        // Lọc theo Chữ cái A-Z
         function filterByLetter(letter) {
             currentLetter = letter;
             document.querySelectorAll('.az-btn').forEach(btn => btn.classList.remove('active'));
-            if(event && event.target) event.target.classList.add('active');
+            if (event && event.target) event.target.classList.add('active');
             renderContent();
         }
 
-        // Xử lý khi tích chọn nhiều Thể Loại
         function handleGenreChange() {
             const checkboxes = document.querySelectorAll('.checkbox-group input:checked');
             selectedGenres = Array.from(checkboxes).map(cb => cb.value);
             renderContent();
         }
 
-        // Tìm kiếm nhanh
         function handleSearch() {
             renderContent();
         }
 
-        // Hiển thị nội dung chính lên màn hình
         function renderContent() {
-            let
+            let filtered = [...allStories];
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            if (currentTab === 'recent') {
+                document.getElementById('content-header').innerHTML = `<span>Mới Cập Nhật</span>`;
+                document.getElementById('az-filter-container').style.display = 'none';
+                // Đảo ngược mảng để bộ nhập ở cuối sheet lên đầu tiên
+                filtered.reverse();
+            } else {
+                document.getElementById('az-filter-container').style.display = 'flex';
+                if (currentContext !== 'ALL') {
+                    document.getElementById('content-header').innerHTML = `<span>Bối Cảnh: ${currentContext}</span>`;
+                    filtered = filtered.filter(s => s.context === currentContext);
+                } else {
+                    document.getElementById('content-header').innerHTML = `<span>Trang Chủ - Sắp Xếp A-Z</span>`;
+                    filtered.sort((a, b) => a.title.localeCompare(b.title, 'vi'));
+                }
+
+                if (currentLetter !== 'ALL' && currentContext === 'ALL') {
+                    filtered = filtered.filter(s => s.title.toUpperCase().startsWith(currentLetter));
+                }
+            }
+
+            if (selectedGenres.length > 0) {
+                filtered = filtered.filter(s => selectedGenres.every(g => s.genres.includes(g)));
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(s => s.title.toLowerCase().includes(searchTerm));
+            }
+
+            let container = document.getElementById('stories-container');
+            if (filtered.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #888; padding: 40px;">Không tìm thấy truyện phù hợp yêu cầu!</p>`;
+                return;
+            }
+
+            let html = `<div class="story-grid">`;
+            filtered.forEach(story => {
+                let tagsHtml = story.genres.map(g => `<span class="tag-badge">${g}</span>`).join('');
+                html += `
+                    <div class="story-card">
+                        <div>
+                            <div class="story-title">${story.title}</div>
+                            <div class="story-meta">Bối cảnh: ${story.context}</div>
+                            <div class="story-tags">${tagsHtml}</div>
+                        </div>
+                        <a href="${story.link}" target="_blank" class="read-btn">Đọc Truyện <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
