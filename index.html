@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Góc Lưu Trữ - Đam Mỹ Thư Quán</title>
-    <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -35,16 +34,17 @@
         }
 
         body {
-            font-family: 'Lora', serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
         }
 
+        /* Header */
         header {
             background-color: var(--card-bg);
             border-bottom: 2px solid var(--accent-color);
-            padding: 20px 40px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -54,15 +54,15 @@
         }
 
         .logo h1 {
-            font-family: 'Cinzel', serif;
             color: var(--accent-color);
-            font-size: 1.8rem;
-            letter-spacing: 1px;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+            font-weight: 700;
         }
 
         .header-controls {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             align-items: center;
         }
 
@@ -70,10 +70,11 @@
             background: transparent;
             border: 1px solid var(--accent-color);
             color: var(--accent-color);
-            padding: 8px 15px;
+            padding: 6px 12px;
             cursor: pointer;
             border-radius: 4px;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .theme-toggle:hover, .btn-home:hover {
@@ -81,102 +82,112 @@
             color: var(--bg-color);
         }
 
+        /* Container chính */
         .main-container {
             max-width: 1300px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 20px auto;
+            padding: 0 15px;
             display: grid;
-            grid-template-columns: 250px 1fr 300px;
-            gap: 30px;
+            grid-template-columns: 1fr 300px;
+            gap: 25px;
         }
 
         @media (max-width: 1024px) {
             .main-container {
                 grid-template-columns: 1fr;
             }
-            .sidebar-right {
-                order: 3;
-            }
         }
 
-        /* Sidebar Trái (Menu & Thể loại) */
-        .sidebar-left {
+        /* Khu vực điều hướng & Lọc trên đầu (Top Filters Bar) */
+        .filter-bar {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             padding: 20px;
             border-radius: 8px;
-            height: fit-content;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .menu-section {
-            margin-bottom: 25px;
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
         }
 
-        .menu-section h3 {
-            font-family: 'Cinzel', serif;
+        .filter-row label-title {
+            font-weight: bold;
             color: var(--accent-color);
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-        }
-
-        .menu-list {
-            list-style: none;
-        }
-
-        .menu-list li {
-            padding: 8px 0;
-            cursor: pointer;
-            color: var(--text-color);
+            min-width: 90px;
             font-size: 0.95rem;
         }
 
-        .menu-list li:hover, .menu-list li.active {
-            color: var(--accent-color);
-            padding-left: 5px;
+        .filter-btn {
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 4px;
         }
 
-        .checkbox-group {
-            max-height: 200px;
-            overflow-y: auto;
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border-color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        /* Hộp check thể loại cuộn gọn */
+        .checkbox-container {
             display: flex;
-            flex-direction: column;
-            gap: 6px;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 5px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            width: 100%;
+            background: var(--sidebar-bg);
         }
 
-        .checkbox-group label {
-            font-size: 0.9rem;
+        .checkbox-container label {
+            font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
+            background: var(--card-bg);
+            padding: 4px 8px;
+            border-radius: 3px;
+            border: 1px solid var(--border-color);
         }
 
-        /* Khu vực hiển thị nội dung chính */
+        /* Nội dung chính */
         .content-area {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 30px;
+            padding: 20px;
             border-radius: 8px;
-            min-height: 600px;
+            min-height: 500px;
         }
 
         .section-title {
-            font-family: 'Cinzel', serif;
             color: var(--accent-color);
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
             border-bottom: 2px solid var(--accent-color);
             padding-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-weight: 700;
         }
 
         .az-filter {
             display: flex;
-            gap: 5px;
+            gap: 4px;
             flex-wrap: wrap;
             margin-bottom: 20px;
         }
@@ -185,8 +196,8 @@
             background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 4px 8px;
-            font-size: 0.85rem;
+            padding: 3px 7px;
+            font-size: 0.8rem;
             cursor: pointer;
             border-radius: 3px;
         }
@@ -199,47 +210,46 @@
 
         .story-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
         }
 
         .story-card {
             background: var(--sidebar-bg);
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            padding: 18px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
         .story-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             color: var(--accent-color);
-            margin-bottom: 8px;
-            font-family: 'Cinzel', serif;
+            margin-bottom: 6px;
         }
 
         .story-meta {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #888;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .story-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 15px;
+            gap: 4px;
+            margin-bottom: 12px;
         }
 
         .tag-badge {
             background: rgba(255, 215, 0, 0.1);
             border: 1px solid var(--accent-color);
             color: var(--accent-color);
-            font-size: 0.75rem;
-            padding: 2px 6px;
+            font-size: 0.7rem;
+            padding: 2px 5px;
             border-radius: 3px;
         }
 
@@ -248,11 +258,12 @@
             background: transparent;
             border: 1px solid var(--accent-color);
             color: var(--accent-color);
-            padding: 6px 12px;
+            padding: 6px 10px;
             text-decoration: none;
             border-radius: 4px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: block;
+            font-weight: 600;
         }
 
         .read-btn:hover {
@@ -260,7 +271,7 @@
             color: var(--bg-color);
         }
 
-        /* Sidebar Phải (Social & Tìm kiếm) */
+        /* Sidebar Phải (Tìm kiếm & Social) */
         .sidebar-right {
             display: flex;
             flex-direction: column;
@@ -275,10 +286,9 @@
         }
 
         .widget h3 {
-            font-family: 'Cinzel', serif;
             color: var(--accent-color);
-            font-size: 1.1rem;
-            margin-bottom: 15px;
+            font-size: 1rem;
+            margin-bottom: 12px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 5px;
         }
@@ -342,47 +352,48 @@
     </header>
 
     <div class="main-container">
-        <!-- Sidebar Trái -->
-        <div class="sidebar-left">
-            <div class="menu-section">
-                <h3>Danh Mục</h3>
-                <ul class="menu-list">
-                    <li onclick="switchTab('home')" class="active" id="menu-home">Trang chủ (A-Z)</li>
-                    <li onclick="switchTab('recent')" id="menu-recent">Mới cập nhật</li>
-                </ul>
+        <!-- Cột Nội Dung Chính -->
+        <div>
+            <!-- THANH MENU & LỌC ĐẶT LÊN TRÊN ĐẦU -->
+            <div class="filter-bar">
+                <div class="filter-row">
+                    <span style="color:var(--accent-color); font-weight:bold; min-width:90px;">Danh mục:</span>
+                    <button class="filter-btn active" onclick="switchTab('home')" id="menu-home">Trang chủ (A-Z)</button>
+                    <button class="filter-btn" onclick="switchTab('recent')" id="menu-recent">Mới cập nhật</button>
+                </div>
+
+                <div class="filter-row">
+                    <span style="color:var(--accent-color); font-weight:bold; min-width:90px;">Bối cảnh:</span>
+                    <div id="context-buttons" style="display:flex; flex-wrap:wrap; gap:6px;">
+                        <!-- Đưa tự động qua JS -->
+                    </div>
+                </div>
+
+                <div class="filter-row" style="align-items: flex-start;">
+                    <span style="color:var(--accent-color); font-weight:bold; min-width:90px; padding-top:4px;">Thể loại:</span>
+                    <div class="checkbox-container" id="genre-checkbox-group">
+                        <!-- Đưa tự động qua JS -->
+                    </div>
+                </div>
             </div>
 
-            <div class="menu-section">
-                <h3>Bối Cảnh</h3>
-                <ul class="menu-list" id="context-menu-list">
-                    <!-- Được sinh tự động qua JS -->
-                </ul>
-            </div>
+            <!-- KHU VỰC HIỂN THỊ TRUYỆN -->
+            <div class="content-area">
+                <div id="content-header" class="section-title">
+                    <span>Tất Cả Truyện</span>
+                </div>
+                
+                <div id="az-filter-container" class="az-filter">
+                    <!-- Bộ lọc A-Z -->
+                </div>
 
-            <div class="menu-section">
-                <h3>Thể Loại</h3>
-                <div class="checkbox-group" id="genre-checkbox-group">
-                    <!-- Được sinh tự động qua JS -->
+                <div id="stories-container">
+                    <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu từ Google Sheets...</div>
                 </div>
             </div>
         </div>
 
-        <!-- Nội dung chính -->
-        <div class="content-area">
-            <div id="content-header" class="section-title">
-                <span>Tất Cả Truyện</span>
-            </div>
-            
-            <div id="az-filter-container" class="az-filter">
-                <!-- Bộ lọc A-Z -->
-            </div>
-
-            <div id="stories-container">
-                <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu từ Google Sheets...</div>
-            </div>
-        </div>
-
-        <!-- Sidebar Phải -->
+        <!-- Sidebar Phải (Tìm kiếm & Social) -->
         <div class="sidebar-right">
             <div class="widget">
                 <h3>Tìm Kiếm Nhanh</h3>
@@ -418,7 +429,6 @@
 
         const CONTEXT_LIST = ["Nguyên thủy", "Cổ đại", "Dân quốc", "Thập niên", "Hiện đại", "Tương lai", "Mạt thế"];
 
-        // Xử lý đổi theme và lưu vào localStorage
         function toggleTheme() {
             const body = document.body;
             const currentTheme = body.getAttribute('data-theme');
@@ -464,7 +474,6 @@
                     const genresStr = cols[1] || '';
                     const genres = genresStr.split(',').map(g => g.trim()).filter(g => g);
 
-                    // Tự động nhận diện bối cảnh dựa vào thể loại hoặc tên truyện
                     let context = "Khác";
                     for (let ctx of CONTEXT_LIST) {
                         if (genresStr.toLowerCase().includes(ctx.toLowerCase()) || title.toLowerCase().includes(ctx.toLowerCase())) {
@@ -477,22 +486,22 @@
                         title: title,
                         genres: genres,
                         context: context,
-                        link: `https://dammythuquan.com/` // Link gốc hệ thống
+                        link: `https://dammythuquan.com/`
                     });
                 }
             }
 
-            initSidebarFilters();
+            initTopFilters();
             renderContent();
         }
 
-        function initSidebarFilters() {
-            // Render Bối cảnh
-            let ctxHtml = `<li onclick="filterByContext('ALL')" id="ctx-ALL" class="active">Tất cả bối cảnh</li>`;
+        function initTopFilters() {
+            // Render Bối cảnh ở thanh trên
+            let ctxHtml = `<button class="filter-btn active" onclick="filterByContext('ALL')" id="ctx-ALL">Tất cả</button>`;
             CONTEXT_LIST.forEach(ctx => {
-                ctxHtml += `<li onclick="filterByContext('${ctx}')" id="ctx-${ctx}">${ctx}</li>`;
+                ctxHtml += `<button class="filter-btn" onclick="filterByContext('${ctx}')" id="ctx-${ctx}">${ctx}</button>`;
             });
-            document.getElementById('context-menu-list').innerHTML = ctxHtml;
+            document.getElementById('context-buttons').innerHTML = ctxHtml;
 
             // Thu thập thể loại độc nhất
             let allGenresSet = new Set();
@@ -522,18 +531,23 @@
             currentLetter = 'ALL';
             selectedGenres = [];
             
-            document.querySelectorAll('.menu-list li').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.filter-row .filter-btn').forEach(el => {
+                if(el.id === 'menu-home' || el.id === 'menu-recent') el.classList.remove('active');
+            });
             if (tab === 'home') document.getElementById('menu-home').classList.add('active');
             if (tab === 'recent') document.getElementById('menu-recent').classList.add('active');
 
-            document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
+            document.querySelectorAll('#context-buttons .filter-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('ctx-ALL').classList.add('active');
+
+            document.querySelectorAll('.checkbox-container input').forEach(cb => cb.checked = false);
             renderContent();
         }
 
         function filterByContext(ctx) {
             currentContext = ctx;
             currentTab = 'context';
-            document.querySelectorAll('#context-menu-list li').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#context-buttons .filter-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(`ctx-${ctx}`).classList.add('active');
             renderContent();
         }
@@ -546,7 +560,7 @@
         }
 
         function handleGenreChange() {
-            const checkboxes = document.querySelectorAll('.checkbox-group input:checked');
+            const checkboxes = document.querySelectorAll('.checkbox-container input:checked');
             selectedGenres = Array.from(checkboxes).map(cb => cb.value);
             renderContent();
         }
@@ -562,7 +576,6 @@
             if (currentTab === 'recent') {
                 document.getElementById('content-header').innerHTML = `<span>Mới Cập Nhật</span>`;
                 document.getElementById('az-filter-container').style.display = 'none';
-                // Đảo ngược mảng để bộ nhập ở cuối sheet lên đầu tiên
                 filtered.reverse();
             } else {
                 document.getElementById('az-filter-container').style.display = 'flex';
